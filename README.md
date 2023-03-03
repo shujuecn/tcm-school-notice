@@ -16,7 +16,7 @@
 
    ```python
    # setting.py
-   
+
    NoticeType = "调剂"			# 修改需要查询的字段
    SchoolInfo = {
      "湖南中医药大学": [...],
@@ -30,13 +30,13 @@
    python3 spider.py
    ```
 
-   
+
 
 ## 效果
 
 1. 有匹配到信息
 
-  ![研究生](https://p.ipic.vip/3rb1v8.png)
+   ![研究生](https://p.ipic.vip/3rb1v8.png)
 
 2. 未匹配到信息
 
