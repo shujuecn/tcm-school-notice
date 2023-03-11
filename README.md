@@ -17,11 +17,11 @@
    ```python
    # setting.py
 
-   NoticeType = "调剂"			# 修改需要查询的字段
-   SchoolInfo = {
+   keywords_list = ["硕士", "复试"]			# 修改需要查询的字段
+   school_info = {
      "湖南中医药大学": [...],
      "湖北民族大学": [...]
-   }											  # 修改需要查询的院校
+   }											    # 修改需要查询的院校
    ```
 
 3. 启动爬虫
@@ -29,8 +29,6 @@
    ```
    python3 spider.py
    ```
-
-
 
 ## 效果
 
