@@ -2,10 +2,10 @@
 # -*- encoding: utf-8 -*-
 
 # 要查询的字段
-NoticeType = "调剂"
+keywords_list = ["硕士", "复试"]
 
 # 学校信息列表
-SchoolInfo = {
+school_info = {
     "湖南中医药大学": [
         {
             "url": "https://yjsy.hnucm.edu.cn/zsxx/tzgg.htm",
@@ -212,27 +212,11 @@ SchoolInfo = {
             "time": "//div[@class='ul_list']//li/span/text()",
         }
     ],
-    # "山西省中医药研究院": [
-    #     {
-    #         "url": "https://www.sxzyy.com/html/web/yanjiushengjiaoyu/zhaoshengyujiuye/index.html#/yanjiushengjiaoyu/zhaoshengyujiuye",
-    #         "title": "//div[@class='title']//span/text()",
-    #         "href": None,
-    #         "time": "//div[@class='time']/text()"
-    #     }
-    # ],
-    # "辽宁中医药大学": [
-    #     {
-    #         "url": "http://yjs.lnutcm.edu.cn/home;jsessionid=C0A99CCB8E9E64187F916667446F45B4.kingo?p_p_id=showJournal_INSTANCE_rXyb&p_p_lifecycle=0&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-3&p_p_col_pos=1&p_p_col_count=5&_showJournal_INSTANCE_rXyb_struts_action=%2Fext%2Fshowjournal%2Fview&_showJournal_INSTANCE_rXyb_condition=yes",
-    #         "title": "//div[@id='_showJournal_INSTANCE_rXyb_table_div']//tr/td/div/a/text()",
-    #         "href": "//div[@id='_showJournal_INSTANCE_rXyb_table_div']//tr//div//@link",
-    #         "time": "//div[@id='_showJournal_INSTANCE_rXyb_table_div']//tr/td[4]/text()",
-    #     }
-    # ],
 }
 
 
 if __name__ == "__main__":
-    for school, urls in SchoolInfo.items():
+    for school, urls in school_info.items():
         for url in urls:
             url_str = url["url"]
             path_str = url["title"]

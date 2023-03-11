@@ -9,7 +9,10 @@
 import requests
 from lxml import etree
 import urllib.parse
-from setting import NoticeType, SchoolInfo
+import setting
+
+KEYWORDS_LIST = setting.keywords_list
+SCHOOL_INFO = setting.school_info
 
 
 class NoticeScraper(object):
@@ -18,22 +21,22 @@ class NoticeScraper(object):
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.50",
         }
-        self.type = None
         self.charset = None
         self.notice_url = None
         self.title_path = None
         self.herf_path = None
         self.time_path = None
 
-    def crawl_notice(self, type, charset):
+    def crawl_notice(self, kws_list, charset):
         """
         在指定的网页中爬取通知信息
-        :param type: 要在标题中匹配的关键词
-        :return: 匹配成功的通知列表
+        :param kws_list: 关键词列表
+        :param charset: 网页编码
+        :return: 通知信息列表
         """
 
         try:
-            response = requests.get(self.notice_url, headers=self.headers)
+            response = requests.get(self.notice_url, headers=self.headers, timeout=2)
             if response.status_code == 200:
                 response.encoding = charset
                 html = etree.HTML(response.text)
@@ -53,7 +56,11 @@ class NoticeScraper(object):
         result = []
         for i in range(len(title)):
 
-            if type in title[i]:
+            # 判断标题中是否包含所有的关键词
+            kws_found = [kws in title[i] for kws in kws_list]
+
+            # 如果包含所有的关键词，则将该通知信息添加到结果列表中
+            if all(kws_found):
 
                 if not herf[i]:
                     herf[i] = None
@@ -73,11 +80,10 @@ class NoticeScraper(object):
 
         return result
 
-    def print_notice(self, result, type):
+    def print_notice(self, result):
         """
         在控制台中打印匹配成功的通知信息
-        :param result: 通知列表
-        :param type: 要在标题中匹配的关键词
+        :param result: 匹配成功的通知列表
         :return: None
         """
 
@@ -87,24 +93,24 @@ class NoticeScraper(object):
                 herf = r["herf"]
                 time = r["time"]
 
-                title = title.replace(type, "\033[1;31m" + type + "\033[1;34m")
-                print(f"标题: \033[1;34m{title}\033[0m")
+                print(f"标题: \033[1;31m{title}\033[0m")
                 print(f"链接: {herf}")
                 print(f"时间: {time}")
         else:
             print("暂无通知")
 
-    def run(self, type):
+    def run(self, kws_list):
         """
         主函数
-        :param type: 要在标题中匹配的关键词
+        :param kws_list: 要在标题中匹配的关键词列表
         :return: None
         """
 
-        for school, urls in SchoolInfo.items():
+        for school, urls in SCHOOL_INFO.items():
 
             print("*" * 80, "\n")
-            print(f"正在查询\033[1;31m{school}\033[0m的【{type}】通知...\n")
+
+            print(f"正在查询\033[1;34m{school}\033[0m的【{'、'.join(kws_list)}】通知...\n")
 
             for url in urls:
                 # 如果有charset字段，则使用charset字段的值，否则使用utf-8
@@ -116,17 +122,16 @@ class NoticeScraper(object):
                 self.time_path = url["time"]
 
                 try:
-                    result = self.crawl_notice(type, self.charset)
+                    result = self.crawl_notice(kws_list, self.charset)
                 except Exception as e:
                     print(e)
                     result = None
 
-                self.print_notice(result, type)
-
+                self.print_notice(result)
             print()
         print("*" * 80)
 
 
 if __name__ == "__main__":
     scraper = NoticeScraper()
-    scraper.run(type=NoticeType)
+    scraper.run(kws_list=KEYWORDS_LIST)
